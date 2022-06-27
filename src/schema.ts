@@ -35,6 +35,43 @@ builder.queryType({
         });
       },
     }),
+    links: t.prismaField({
+      type: ['Link'],
+      nullable: false,
+      args: {
+        take: t.arg.int(),
+        skip: t.arg.int(),
+      },
+      resolve: (query, root, args) => {
+        return db.link.findMany({
+          ...query,
+          take: args.take ?? 10,
+          skip: args.skip ?? 0,
+        });
+      },
+    }),
+  }),
+});
+
+builder.mutationType({
+  fields: (t) => ({
+    postLink: t.prismaField({
+      type: 'Link',
+      nullable: false,
+      args: {
+        description: t.arg.string(),
+        url: t.arg.string(),
+      },
+      resolve: (query, root, args) => {
+        return db.link.create({
+          ...query,
+          data: {
+            description: args.description ?? '',
+            url: args.url ?? '',
+          },
+        });
+      },
+    }),
   }),
 });
 
